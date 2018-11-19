@@ -11,7 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
     private BillData billData;
     public DBHelper myDBHelper;
 
-    //TODO: figure out how to load the data from file.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
                 break;
             // action with ID action_minus was selected
             case R.id.action_minus:
-                Toast.makeText(this, "Delete Card", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "This feature is not yet implemented", Toast.LENGTH_SHORT)
                         .show();
                 break;
             case R.id.action_details:

@@ -46,6 +46,9 @@ public class DetailedActivity extends AppCompatActivity {
             eName.setText(bundle.getString("title"));
 //            image.setImageResource(bundle.getInt("image"));
             eAmount.setText(bundle.getString("amount"));
+            eDay.setText(bundle.getString("day"));
+            eDescription.setText(bundle.getString("description"));
+            eDay.setText(bundle.getString("day"));
             id = bundle.getInt("id");
             size = bundle.getInt("size");
             Log.i("asdfasd", String.valueOf(id));
@@ -53,7 +56,6 @@ public class DetailedActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: figure out hoow to write to the file here
     public void SaveButtonClicked(View view){
         Intent intent = new Intent(view.getContext(), MainActivity.class);
         //you could pass data between intents if you wanted to. BUT ITS NOT EFFICIENT.

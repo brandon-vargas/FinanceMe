@@ -1,5 +1,8 @@
 package apps.brandon.finance;
 
+
+import java.util.Comparator;
+
 public class BillData {
 
     public String name;
@@ -53,6 +56,15 @@ public class BillData {
     public void setAmount(String amount) {
         this.amount = amount;
     }
+
+    public static Comparator<BillData> BillDayComparator = new Comparator<BillData>() {
+        @Override
+        public int compare(BillData o1, BillData o2) {
+            Integer day1 = Integer.valueOf(o1.getDay());
+            Integer day2 = Integer.valueOf(o2.getDay());
+
+            return day1.compareTo(day2);
+        }};
 }
 
 

@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -70,6 +72,7 @@ public class DBHelper extends SQLiteOpenHelper {
         //could potentially return id if needed
     }
 
+    //TODO: sort cards based on pay iteration
     public ArrayList<BillData> getAllBillRecords(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME_BILL, null, null, null, null, null, null);
@@ -89,6 +92,7 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
         cursor.close();
+        Collections.sort(billList, BillData.BillDayComparator );
         return billList;
     }
 
