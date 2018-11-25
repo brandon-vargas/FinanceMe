@@ -10,8 +10,6 @@ public class HeaderViewHolder extends RecyclerView.ViewHolder{
 
     HeaderViewHolder(View view){
         super(view);
-
         header = view.findViewById(R.id.current_pay_header);
-
     }
 }

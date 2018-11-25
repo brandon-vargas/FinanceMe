@@ -1,5 +1,7 @@
 package apps.brandon.finance;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -12,14 +14,17 @@ public class CurrentPaySection extends StatelessSection{
 
     String title;
     List<BillData> billDataList;
+    private Context mContext;
 
-    CurrentPaySection(String title, List<BillData> billDataList){
+    //This constructor will be used to pass data from MainActivity.java to this adapter
+    CurrentPaySection(Context mContext, String title, List<BillData> billDataList){
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.current_pay_section_body)
                 .headerResourceId(R.layout.current_pay_section_header)
                 .build());
         this.title = title;
         this.billDataList = billDataList;
+        this.mContext = mContext;
     }
 
     @Override
@@ -34,11 +39,25 @@ public class CurrentPaySection extends StatelessSection{
 
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+        final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
 
-        String name = billDataList.get(position).getName();
+        itemViewHolder.name.setText(billDataList.get(position).getName());
+        itemViewHolder.amount.setText(billDataList.get(position).getAmount());
+        itemViewHolder.cardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(mContext, DetailedActivity.class);
+                intent.putExtra("title", billDataList.get(itemViewHolder.getAdapterPosition()).getName());
+                intent.putExtra("day", billDataList.get(itemViewHolder.getAdapterPosition()).getDay());
 
-        itemViewHolder.name.setText(name);
+                intent.putExtra("description", billDataList.get(itemViewHolder.getAdapterPosition()).getDescription());
+                intent.putExtra("amount", billDataList.get(itemViewHolder.getAdapterPosition()).getAmount());
+//                intent.putExtra("image", mBillList.get(viewHolder.getAdapterPosition()).getBillImage());
+                intent.putExtra("id", itemViewHolder.getAdapterPosition());
+                intent.putExtra("size",billDataList.size());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

@@ -5,10 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -17,7 +15,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String CREATE_TABLE_BILLS = "CREATE TABLE billtable "+
             "(id INTEGER PRIMARY KEY, name TEXT, day TEXT, description TEXT, amount TEXT)";
-    public static final String COLUMN_ID = "id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_DESCRIPTION = "description";
@@ -26,9 +23,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DROP_TABLE_BILLS = "DROP TABLE IF EXISTS billtable";
 
     public static final String CREATE_TABLE_CHECKDATES = "CREATE TABLE checkdatestable"+
-            "(id INTEGER PRIMARY KEY, date TEXT)";
-    public static final String COLUMN_DATE = "date";
+            "(id INTEGER PRIMARY KEY, date TEXT, used INTEGER)";
+    public static final String COLUMN_DATE_CHECKS = "date";
     public static final String COLUMN_ID_CHECKS = "id";
+    public static final String COLUMN_USED_CHECKS = "used";
     public static final String TABLE_NAME_CHECKDATES = "checkdatestable";
     public static final String DROP_TABLE_CHECKDATES = "DROP TABLE IF EXISTS checkdatestable";
 
@@ -58,11 +56,10 @@ public class DBHelper extends SQLiteOpenHelper {
     //Bill table functions
     //
     //
-    public void insertBillRecord(BillData bill, int id, int size){
+    public void insertBillRecord(BillData bill){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_ID, id);
         values.put(COLUMN_NAME, bill.getName());
         values.put(COLUMN_DAY, bill.getDay());
         values.put(COLUMN_AMOUNT, bill.getAmount());
@@ -92,6 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         //sorts based on bill day
+        //TODO: do we even need this? i dont think so.
         Collections.sort(billList, BillData.BillDayComparator );
         return billList;
     }
@@ -105,12 +103,13 @@ public class DBHelper extends SQLiteOpenHelper {
     //CheckDates table functions
     //
     //
-    public void insertCheckDate(String date, int id){
+    public void insertCheckDate(String date, int id, int used){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COLUMN_DATE, date);
         values.put(COLUMN_ID_CHECKS, id);
+        values.put(COLUMN_DATE_CHECKS, date);
+        values.put(COLUMN_USED_CHECKS, used);
 
         long insertId = db.insert(TABLE_NAME_CHECKDATES, null, values);
         //could potentially return id if needed
@@ -122,17 +121,20 @@ public class DBHelper extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    public ArrayList<String> getAllCheckDates(){
+    public ArrayList<CheckData> getAllCheckDates(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME_CHECKDATES, null, null, null, null, null, null);
-        ArrayList<String> checkDatesList = new ArrayList<>();
+        ArrayList<CheckData> checkDatesList = new ArrayList<>();
         String date;
+        int used;
 
         if(cursor.getCount() > 0){
             for( int i = 0; i < cursor.getCount(); i++){
                 cursor.moveToNext();
                 date = cursor.getString(1);
-                checkDatesList.add(date);
+                used = cursor.getInt(2);
+                CheckData checkData = new CheckData(date, used);
+                checkDatesList.add(checkData);
             }
         }
         cursor.close();
@@ -140,6 +142,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return checkDatesList;
     }
 
+    //TODO: make sure this works
     public int clearCheckDateTable(){
         SQLiteDatabase db = this.getWritableDatabase();
         int rowsDeleted = db.delete(TABLE_NAME_CHECKDATES,"1", null);

@@ -16,10 +16,8 @@ public class DetailedActivity extends AppCompatActivity {
     public EditText eAmount;
     public EditText eDay;
     public EditText eDescription;
-    public ImageView image;
     public Button saveButton;
     public Button cancelButton;
-    public int id;
     public int size;
     public DBHelper myDBHelper;
 
@@ -35,25 +33,21 @@ public class DetailedActivity extends AppCompatActivity {
         eAmount = findViewById(R.id.detailed_amount);
         eDay = findViewById(R.id.detailed_day);
         eDescription = findViewById(R.id.detailed_description);
-//        image = findViewById(R.id.detailed_image);
         saveButton = findViewById(R.id.save_button);
         cancelButton = findViewById(R.id.cancel_button);
-        id = 0;
         size = 0;
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             eName.setText(bundle.getString("title"));
-//            image.setImageResource(bundle.getInt("image"));
             eAmount.setText(bundle.getString("amount"));
             eDay.setText(bundle.getString("day"));
             eDescription.setText(bundle.getString("description"));
             eDay.setText(bundle.getString("day"));
-            id = bundle.getInt("id");
             size = bundle.getInt("size");
-            Log.i("asdfasd", String.valueOf(id));
-            Log.i("zxcvzcxv", String.valueOf(size));
+            Log.i("FUCKING SIZE ", String.valueOf(size));
         }
+
     }
 
     //TODO: implement safe checks for user input
@@ -62,7 +56,7 @@ public class DetailedActivity extends AppCompatActivity {
         //you could pass data between intents if you wanted to. BUT ITS NOT EFFICIENT.
 
         BillData bill = new BillData(eName.getText().toString(), eDay.getText().toString(), eDescription.getText().toString(), eAmount.getText().toString());
-        myDBHelper.insertBillRecord(bill, id, size);
+        myDBHelper.insertBillRecord(bill);
 
         startActivity(intent);
     }

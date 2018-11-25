@@ -65,6 +65,16 @@ public class BillData {
 
             return day1.compareTo(day2);
         }};
+
+    @Override
+    public String toString() {
+        return "BillData{" +
+                "name='" + this.name + '\'' +
+                ", day='" + this.day + '\'' +
+                ", description='" + this.description + '\'' +
+                ", amount='" + this.amount + '\'' +
+                '}';
+    }
 }
 
 

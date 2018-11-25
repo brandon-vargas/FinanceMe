@@ -64,7 +64,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.BillViewHolder>{
                 intent.putExtra("description", mBillList.get(viewHolder.getAdapterPosition()).getDescription());
                 intent.putExtra("amount", mBillList.get(viewHolder.getAdapterPosition()).getAmount());
 //                intent.putExtra("image", mBillList.get(viewHolder.getAdapterPosition()).getBillImage());
-                intent.putExtra("id", viewHolder.getAdapterPosition());
                 intent.putExtra("size",mBillList.size());
                 mContext.startActivity(intent);
             }

@@ -1,5 +1,6 @@
 package apps.brandon.finance;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +17,12 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
     private GridLayoutManager gridLayoutManager;
     public MyAdapter myAdapter;
     private List<BillData> myBillList;
-    private BillData billData;
+    private List<BillData> currentBillList;
+    private List<BillData> nextBillList;
     public DBHelper myDBHelper;
     private SectionedRecyclerViewAdapter sectionAdapter;
 
@@ -75,16 +81,26 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
-        if(myDBHelper.getCountOfBillRecords() == 0) myBillList = new ArrayList<>();
-        else myBillList = myDBHelper.getAllBillRecords();
+        //TODO: maybe if theres no record count, use default place holders?
+        if(myDBHelper.getCountOfBillRecords() == 0) {
+            myBillList = new ArrayList<>();
+            currentBillList = new ArrayList<>();
+            nextBillList = new ArrayList<>();
+        }
+        else{
+            myBillList = myDBHelper.getAllBillRecords();
+            try{
+                currentBillList = getFilteredBillRecords(myBillList, 1);
+                nextBillList = getFilteredBillRecords(myBillList, 2);
+            }catch (Exception e){e.printStackTrace();}
+        }
 
-        BillData tempBillData = new BillData();
-        myBillList.add(tempBillData);
-        myBillList.add(tempBillData);
-        myBillList.add(tempBillData);
-        myBillList.add(tempBillData);
-        sectionAdapter.addSection(new CurrentPaySection("Current Pay Cycle", myBillList));
-        sectionAdapter.addSection(new CurrentPaySection("Next Pay Cycle", myBillList));
+        Log.i("size of my bills", String.valueOf(myDBHelper.getCountOfBillRecords()));
+        Log.i("currentBill", currentBillList.toString());
+        Log.i("nextBill",  nextBillList.toString());
+
+        sectionAdapter.addSection(new CurrentPaySection(MainActivity.this,"Current Pay Cycle", currentBillList));
+        sectionAdapter.addSection(new CurrentPaySection(MainActivity.this,"Next Pay Cycle", nextBillList));
 
         myAdapter = new MyAdapter(MainActivity.this, myBillList);
         mRecyclerView.setAdapter(sectionAdapter);
@@ -109,12 +125,13 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
         switch (item.getItemId()) {
             // action with ID action_add was selected
             case R.id.action_add:
-                //will add an empyt Bill object to the list
-                //and notify the adapter listen to create new card
-                myBillList.add(new BillData());
-                if(myBillList.size() == 0) myAdapter.notifyItemInserted(0);
-                else myAdapter.notifyItemInserted(myBillList.size()-1);
-
+                if(myDBHelper.getCountOfCheckDates() == 0){
+                    Toast.makeText(this, "You must first set up your check dates in the menu", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Intent intent = new Intent(MainActivity.this, DetailedActivity.class);
+                    MainActivity.this.startActivity(intent);
+                }
                 break;
             // action with ID action_minus was selected
             case R.id.action_minus:
@@ -152,19 +169,97 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
         //adds current pay iteration's date
         calendar.add(Calendar.DATE, -14);
         String previousCheckDate = sdf.format(calendar.getTime());
-        myDBHelper.insertCheckDate(previousCheckDate, 0);
+        myDBHelper.insertCheckDate(previousCheckDate, 0, 1);
 
         int counterId = 1;
         //will add 100 more dates the checks will fall on. roughly about 3 years
         for(int i = 0; i < 100; i++){
             calendar.add(Calendar.DATE, 14);
             String nextCheckDate = sdf.format(calendar.getTime());
-            myDBHelper.insertCheckDate(nextCheckDate,counterId);
+            myDBHelper.insertCheckDate(nextCheckDate,counterId, 0);
             counterId++;
         }
         Toast.makeText(getBaseContext(), "Initializing future check dates complete", Toast.LENGTH_LONG).show();
-        ArrayList<String> finalDateList = myDBHelper.getAllCheckDates();
-        Log.i("Final dates",finalDateList.toString());
+
+//        ArrayList<CheckData> finalDateList = myDBHelper.getAllCheckDates();
+//        Log.i("Final dates",finalDateList.toString());
     }
 
+
+    //Helper functions
+    //
+    //
+    public ArrayList<BillData> getFilteredBillRecords(List<BillData> unfilteredList, int type) throws ParseException{
+        ArrayList<BillData> billDataArrayList = new ArrayList<>();
+        ArrayList<CheckData> checkDataArrayList = myDBHelper.getAllCheckDates();
+        String payIterationString = determineCurrentPayIteration(checkDataArrayList);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        Date todaysDate = new Date();
+        String today = sdf.format(todaysDate);
+        Calendar calendarToday = Calendar.getInstance();
+        Calendar payIterationCal = Calendar.getInstance();
+        try{
+            calendarToday.setTime(sdf.parse(today));
+            payIterationCal.setTime(sdf.parse(payIterationString));
+        }catch (ParseException e){e.printStackTrace();}
+
+
+        //i couldve used enums but that required extra dependencies so NAH
+        //type is searching for current pay iteration bills
+        if(type == 1){
+
+            payIterationCal.add(Calendar.DATE, 14);
+            for(int i = 0; i < 14; i++){
+                payIterationCal.add(Calendar.DATE, -1);
+                String day = sdf.format( payIterationCal.getTime()).split("/")[2];
+
+                for(BillData billData: unfilteredList){
+                    Integer billDay = Integer.parseInt(billData.getDay());
+                    Integer calendarDay = Integer.parseInt(day);
+                    if(billDay == calendarDay){
+                        billDataArrayList.add(billData);
+                    }
+                }
+            }
+        }
+        //type is searching for next pay iteration bills
+        else if(type == 2){
+
+            payIterationCal.add(Calendar.DATE, 28);
+            for(int i = 0; i < 14; i++){
+                payIterationCal.add(Calendar.DATE, -1);
+                String day = sdf.format( payIterationCal.getTime()).split("/")[2];
+
+                for(BillData billData: unfilteredList){
+                    Integer billDay = Integer.parseInt(billData.getDay());
+                    Integer calendarDay = Integer.parseInt(day);
+                    if(billDay == calendarDay){
+                        billDataArrayList.add(billData);
+                    }
+                }
+            }
+        }
+
+        return billDataArrayList;
+    }
+
+    public String determineCurrentPayIteration(ArrayList<CheckData> checkDataArrayList){
+
+        String currentPayDate = "";
+        for( int i = 0; i < checkDataArrayList.size(); i++){
+
+            if( checkDataArrayList.get(i).isUsed() == 1){
+//                    Log.i("fasdfasdf","asdfasdfads");
+                currentPayDate = checkDataArrayList.get(i).getDate();
+            }else{
+                break;
+            }
+        }
+
+//        Log.i("current Pay Date", currentPayDate.getTime().toString());
+        return currentPayDate;
+    }
+
+    //TODO: REMEMEBR, bills may fall on the same day
 }
