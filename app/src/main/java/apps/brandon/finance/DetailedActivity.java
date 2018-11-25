@@ -56,6 +56,7 @@ public class DetailedActivity extends AppCompatActivity {
         }
     }
 
+    //TODO: implement safe checks for user input
     public void SaveButtonClicked(View view){
         Intent intent = new Intent(view.getContext(), MainActivity.class);
         //you could pass data between intents if you wanted to. BUT ITS NOT EFFICIENT.

@@ -23,6 +23,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+
 public class MainActivity extends AppCompatActivity implements DatePickerFragment.DateDialogListener{
     private RecyclerView mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
     private List<BillData> myBillList;
     private BillData billData;
     public DBHelper myDBHelper;
+    private SectionedRecyclerViewAdapter sectionAdapter;
 
 
     @Override
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
 
         myDBHelper = new DBHelper(this);
         mRecyclerView = findViewById(R.id.recycler);
+        sectionAdapter = new SectionedRecyclerViewAdapter();
 
         //Will only run once when the app is opened for the first time.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -58,13 +62,32 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
 
         linearLayoutManager = new LinearLayoutManager(MainActivity.this);
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (sectionAdapter.getSectionItemViewType(position)){
+                    case SectionedRecyclerViewAdapter.VIEW_TYPE_HEADER:
+                        return 2;
+                    default:
+                        return 1;
+                }
+            }
+        });
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
         if(myDBHelper.getCountOfBillRecords() == 0) myBillList = new ArrayList<>();
         else myBillList = myDBHelper.getAllBillRecords();
 
+        BillData tempBillData = new BillData();
+        myBillList.add(tempBillData);
+        myBillList.add(tempBillData);
+        myBillList.add(tempBillData);
+        myBillList.add(tempBillData);
+        sectionAdapter.addSection(new CurrentPaySection("what", myBillList));
+        sectionAdapter.addSection(new CurrentPaySection("huh", myBillList));
+
         myAdapter = new MyAdapter(MainActivity.this, myBillList);
-        mRecyclerView.setAdapter(myAdapter);
+        mRecyclerView.setAdapter(sectionAdapter);
     }
 
     @Override
