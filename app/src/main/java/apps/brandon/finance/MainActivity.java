@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
         myBillList.add(tempBillData);
         myBillList.add(tempBillData);
         myBillList.add(tempBillData);
-        sectionAdapter.addSection(new CurrentPaySection("what", myBillList));
-        sectionAdapter.addSection(new CurrentPaySection("huh", myBillList));
+        sectionAdapter.addSection(new CurrentPaySection("Current Pay Cycle", myBillList));
+        sectionAdapter.addSection(new CurrentPaySection("Next Pay Cycle", myBillList));
 
         myAdapter = new MyAdapter(MainActivity.this, myBillList);
         mRecyclerView.setAdapter(sectionAdapter);
