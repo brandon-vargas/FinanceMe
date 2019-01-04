@@ -40,20 +40,20 @@ public class CurrentPaySection extends StatelessSection{
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-
+        final int adapterPosition = itemViewHolder.getAdapterPosition()-1;
         itemViewHolder.name.setText(billDataList.get(position).getName());
-        itemViewHolder.amount.setText(billDataList.get(position).getAmount());
+//        itemViewHolder.amount.setText(billDataList.get(position).getAmount());
         itemViewHolder.cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(mContext, DetailedActivity.class);
-                intent.putExtra("title", billDataList.get(itemViewHolder.getAdapterPosition()).getName());
-                intent.putExtra("day", billDataList.get(itemViewHolder.getAdapterPosition()).getDay());
+                intent.putExtra("action","update");
+                intent.putExtra("title", billDataList.get(adapterPosition).getName());
+                intent.putExtra("day", billDataList.get(adapterPosition).getDay());
 
-                intent.putExtra("description", billDataList.get(itemViewHolder.getAdapterPosition()).getDescription());
-                intent.putExtra("amount", billDataList.get(itemViewHolder.getAdapterPosition()).getAmount());
-//                intent.putExtra("image", mBillList.get(viewHolder.getAdapterPosition()).getBillImage());
-                intent.putExtra("id", itemViewHolder.getAdapterPosition());
+                intent.putExtra("description", billDataList.get(adapterPosition).getDescription());
+                intent.putExtra("amount", billDataList.get(adapterPosition).getAmount());
+                intent.putExtra("id", billDataList.get(adapterPosition).getId());
                 intent.putExtra("size",billDataList.size());
                 mContext.startActivity(intent);
             }

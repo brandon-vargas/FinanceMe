@@ -12,17 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
-        //TODO: maybe if theres no record count, use default place holders?
+        //TODO: maybe if theres no record count, use default place holders? Pure UI design. doesnt affect functionality
         if(myDBHelper.getCountOfBillRecords() == 0) {
             myBillList = new ArrayList<>();
             currentBillList = new ArrayList<>();
@@ -130,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
                 }
                 else{
                     Intent intent = new Intent(MainActivity.this, DetailedActivity.class);
+                    intent.putExtra("action","new");
                     MainActivity.this.startActivity(intent);
                 }
                 break;
@@ -217,7 +210,11 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
                 for(BillData billData: unfilteredList){
                     Integer billDay = Integer.parseInt(billData.getDay());
                     Integer calendarDay = Integer.parseInt(day);
+                    Log.i("Bill Data ", billData.toString());
+                    Log.i("Bill day = ", String.valueOf(billDay));
+                    Log.i("Calendar Day = ", String.valueOf(calendarDay));
                     if(billDay == calendarDay){
+                        Log.i("FOR 2", "I ENTERED if statement");
                         billDataArrayList.add(billData);
                     }
                 }
@@ -250,14 +247,11 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
         for( int i = 0; i < checkDataArrayList.size(); i++){
 
             if( checkDataArrayList.get(i).isUsed() == 1){
-//                    Log.i("fasdfasdf","asdfasdfads");
                 currentPayDate = checkDataArrayList.get(i).getDate();
             }else{
                 break;
             }
         }
-
-//        Log.i("current Pay Date", currentPayDate.getTime().toString());
         return currentPayDate;
     }
 

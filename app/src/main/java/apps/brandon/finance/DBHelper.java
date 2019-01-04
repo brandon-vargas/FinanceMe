@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,11 +15,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "BillInfo.db";
 
     public static final String CREATE_TABLE_BILLS = "CREATE TABLE billtable "+
-            "(id INTEGER PRIMARY KEY, name TEXT, day TEXT, description TEXT, amount TEXT)";
+            "(id TEXT PRIMARY KEY, name TEXT, day TEXT, description TEXT, amount TEXT, idplus TEXT)";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_AMOUNT = "amount";
+    public static final String COLUMN_ID_BILL = "idplus";
     public static final String TABLE_NAME_BILL = "billtable";
     public static final String DROP_TABLE_BILLS = "DROP TABLE IF EXISTS billtable";
 
@@ -64,9 +66,32 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(COLUMN_DAY, bill.getDay());
         values.put(COLUMN_AMOUNT, bill.getAmount());
         values.put(COLUMN_DESCRIPTION, bill.getDescription());
+        values.put(COLUMN_ID_BILL, bill.getId());
 
         long insertId = db.insert(TABLE_NAME_BILL, null, values);
+        Log.i("inserted id ", String.valueOf(insertId));
         //could potentially return id if needed
+    }
+
+    public int updateBillRecord(String id, String name, String day, String amount, String description) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        String selection = "idplus=?";
+        String[] selectionArgs = { id };
+        Log.i("values = ", id + " " + name + " " + day + " " + amount + " " + description);
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_DAY, day);
+        values.put(COLUMN_AMOUNT, amount);
+        values.put(COLUMN_DESCRIPTION, description);
+        values.put(COLUMN_ID_BILL, id);
+
+        Log.i("id desired for update", id);
+        //TODO: this update is not working.
+        int rowsAffected = db.update(TABLE_NAME_BILL, values, selection, selectionArgs);
+        Log.i("updated? ", String.valueOf(rowsAffected));
+
+
+        return rowsAffected;
     }
 
     public ArrayList<BillData> getAllBillRecords(){
@@ -78,19 +103,33 @@ public class DBHelper extends SQLiteOpenHelper {
         if(cursor.getCount() > 0){
             for( int i = 0; i < cursor.getCount(); i++){
                 cursor.moveToNext();
+//                for(int j = 0; j < 6; j++)
+//                    Log.i("cursor info", cursor.getString(j));
                 bill = new BillData();
                 //cursor.getString(0) is ignored because that contains the id. we currently dont need it.
                 bill.setName(cursor.getString(1));
+                Log.i("Column : ", cursor.getColumnName(1));
+                Log.i("Column n: ", cursor.getString(1));
                 bill.setDay(cursor.getString(2));
+                Log.i("Column : ", cursor.getColumnName(2));
+                Log.i("Column n: ", cursor.getString(2));
+
                 bill.setDescription(cursor.getString(3));
+                Log.i("Column : ", cursor.getColumnName(3));
+                Log.i("Column n: ", cursor.getString(3));
                 bill.setAmount(cursor.getString(4));
+                Log.i("Column : ", cursor.getColumnName(4));
+                Log.i("Column n: ", cursor.getString(4));
+                bill.setId(cursor.getString(5));
+                Log.i("Column : ", cursor.getColumnName(5));
+                Log.i("Column n: ", cursor.getString(5));
                 billList.add(bill);
             }
         }
+        Log.i("this is what i pull", billList.toString());
         cursor.close();
         //sorts based on bill day
-        //TODO: do we even need this? i dont think so.
-        Collections.sort(billList, BillData.BillDayComparator );
+//        Collections.sort(billList, BillData.BillDayComparator );
         return billList;
     }
 

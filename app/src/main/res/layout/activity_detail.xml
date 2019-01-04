@@ -3,40 +3,129 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:text="Bill Information"
+        android:gravity="center"
+        android:paddingBottom="10dp"/>
 
-    <EditText
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/detailed_name"
-        android:hint="Name of Bill"/>
+        android:layout_height="wrap_content">
 
-    <EditText
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            android:text="Name"
+            android:textSize="18dp"
+            android:gravity="bottom"
+            android:paddingLeft="5dp"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detailed_name"
+            android:hint="Electricity"
+            android:layout_toRightOf="@+id/text_name"
+            android:textSize="16dp"
+            android:gravity="center"/>
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/detailed_amount"
-        android:hint="Amount"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/detailed_day"
-        android:hint="Day of Bill"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/detailed_description"
-        android:hint="Description"/>
+        android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/text_amount"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:text="Amount"
+            android:gravity="bottom"
+            android:textSize="18dp"
+            android:paddingLeft="5dp"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detailed_amount"
+            android:hint="56.75"
+            android:layout_toRightOf="@+id/text_amount"
+            android:textSize="16dp"
+            android:gravity="center"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_day"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            android:gravity="bottom"
+            android:text="Day"
+            android:textSize="18dp"
+            android:paddingLeft="5dp"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detailed_day"
+            android:hint="3"
+            android:layout_toRightOf="@+id/text_day"
+            android:textSize="16dp"
+            android:gravity="center"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_description"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:gravity="bottom"
+            android:text="Desc"
+            android:textSize="18dp"
+            android:paddingLeft="5dp"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detailed_description"
+            android:hint="This day sometimes changes..."
+            android:textSize="16dp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/text_description"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/save_button"
-        android:onClick="SaveButtonClicked"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/cancel_button"
-        android:onClick="CancelButtonClicked"/>
+        android:gravity="bottom">
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="76dp"
+            android:onClick="SaveButtonClicked"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="78dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="76dp"
+            android:onClick="CancelButtonClicked"
+            android:text="Cancel" />
+    </RelativeLayout>
 
 </LinearLayout>

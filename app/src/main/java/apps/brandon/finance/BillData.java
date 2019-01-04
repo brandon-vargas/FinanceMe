@@ -2,6 +2,7 @@ package apps.brandon.finance;
 
 
 import java.util.Comparator;
+import java.util.Random;
 
 public class BillData {
 
@@ -9,6 +10,7 @@ public class BillData {
     public String day;
     public String description;
     public String amount;
+    public String id;
 //    public int billImage; IF YOU TURN THIS BACK ON, ADD IT TO THE CONSTRUCTOR
 
     BillData(){
@@ -16,17 +18,28 @@ public class BillData {
         this.day = "";
         this.description = "";
         this.amount = "";
-    }
+        Random rand = new Random();
+        this.id = String.valueOf( rand.nextInt(1000) + 1 );    }
 
     BillData(String name, String day, String description, String amount){
         this.name = name;
         this.day = day;
         this.description = description;
         this.amount = amount;
+        Random rand = new Random();
+        this.id = String.valueOf( rand.nextInt(1000) + 1 );
+    }
+
+    public String getId(){
+        return this.id;
+    }
+
+    public void setId(String id){
+        this.id = id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -34,7 +47,7 @@ public class BillData {
     }
 
     public String getDay() {
-        return day;
+        return this.day;
     }
 
     public void setDay(String day) {
@@ -69,10 +82,11 @@ public class BillData {
     @Override
     public String toString() {
         return "BillData{" +
-                "name='" + this.name + '\'' +
-                ", day='" + this.day + '\'' +
-                ", description='" + this.description + '\'' +
-                ", amount='" + this.amount + '\'' +
+                "name='" + name + '\'' +
+                ", day='" + day + '\'' +
+                ", description='" + description + '\'' +
+                ", amount='" + amount + '\'' +
+                ", id='" + id + '\'' +
                 '}';
     }
 }

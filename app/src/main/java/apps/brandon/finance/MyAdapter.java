@@ -59,6 +59,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.BillViewHolder>{
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(mContext, DetailedActivity.class);
+                intent.putExtra("action","update");
                 intent.putExtra("title", mBillList.get(viewHolder.getAdapterPosition()).getName());
                 intent.putExtra("day", mBillList.get(viewHolder.getAdapterPosition()).getDay());
                 intent.putExtra("description", mBillList.get(viewHolder.getAdapterPosition()).getDescription());
