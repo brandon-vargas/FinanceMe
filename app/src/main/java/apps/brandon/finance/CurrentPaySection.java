@@ -10,6 +10,7 @@ import java.util.List;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
+//TODO: BUG! the values for description and amount flipping back and forth???!?!?!?!
 public class CurrentPaySection extends StatelessSection{
 
     String title;
