@@ -184,9 +184,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
             counterId++;
         }
         Toast.makeText(getBaseContext(), "Initializing future check dates complete", Toast.LENGTH_LONG).show();
-
-//        ArrayList<CheckData> finalDateList = myDBHelper.getAllCheckDates();
-//        Log.i("Final dates",finalDateList.toString());
     }
 
 
@@ -250,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
     }
 
     public String determineCurrentPayIteration(ArrayList<CheckData> checkDataArrayList){
+        //TODO: make test for this functionality
         //FIRST - everytime the main activity opens, makes sure you are updating the current pay iteration
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         try {

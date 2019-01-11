@@ -86,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ID_BILL, id);
 
         Log.i("id desired for update", id);
-        //TODO: this update is not working.
+        //TODO: this update is not working properly.
         int rowsAffected = db.update(TABLE_NAME_BILL, values, selection, selectionArgs);
         Log.i("updated? ", String.valueOf(rowsAffected));
 
