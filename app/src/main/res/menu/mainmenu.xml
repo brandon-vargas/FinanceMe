@@ -12,5 +12,9 @@
     <item
         android:id="@+id/action_details"
         app:showAsAction="never"
-        android:title="Bill Cycle"/>
+        android:title="Set Bill Cycle"/>
+    <item
+        android:id="@+id/action_view_dates"
+        app:showAsAction="never"
+        android:title="View Bill Dates"/>
 </menu>

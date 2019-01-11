@@ -4,10 +4,12 @@ public class CheckData {
 
     public String date;
     public int used;
+    public int id;
 
-    public CheckData(String date, int used) {
+    public CheckData(String date, int used, int id) {
         this.date = date;
         this.used = used;
+        this.id = id;
     }
 
     public String getDate() {
@@ -26,11 +28,16 @@ public class CheckData {
         this.used = used;
     }
 
+    public void setId(int id) {this.id = id;}
+
+    public int getId() {return id;}
+
     @Override
     public String toString(){
 
         return(this.date + " "
-                + Integer.toString(this.used));
+                + Integer.toString(this.used)
+                + Integer.toString(this.id));
 
     }
 }

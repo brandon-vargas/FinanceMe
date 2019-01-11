@@ -3,6 +3,7 @@ package apps.brandon.finance;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import java.util.List;
@@ -39,22 +40,21 @@ public class CurrentPaySection extends StatelessSection{
     }
 
     @Override
-    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        final int adapterPosition = itemViewHolder.getAdapterPosition()-1;
         itemViewHolder.name.setText(billDataList.get(position).getName());
 //        itemViewHolder.amount.setText(billDataList.get(position).getAmount());
+        Log.i("wtf part2",String.valueOf(position));
         itemViewHolder.cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(mContext, DetailedActivity.class);
                 intent.putExtra("action","update");
-                intent.putExtra("title", billDataList.get(adapterPosition).getName());
-                intent.putExtra("day", billDataList.get(adapterPosition).getDay());
-
-                intent.putExtra("description", billDataList.get(adapterPosition).getDescription());
-                intent.putExtra("amount", billDataList.get(adapterPosition).getAmount());
-                intent.putExtra("id", billDataList.get(adapterPosition).getId());
+                intent.putExtra("title", billDataList.get(position).getName());
+                intent.putExtra("day", billDataList.get(position).getDay());
+                intent.putExtra("description", billDataList.get(position).getDescription());
+                intent.putExtra("amount", billDataList.get(position).getAmount());
+                intent.putExtra("id", billDataList.get(position).getId());
                 intent.putExtra("size",billDataList.size());
                 mContext.startActivity(intent);
             }

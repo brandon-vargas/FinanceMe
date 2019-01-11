@@ -135,6 +135,17 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
                 DatePickerFragment dialog = new DatePickerFragment();
                 dialog.show(getSupportFragmentManager(), "MainActivity.DateDialog");
                 break;
+            case R.id.action_view_dates:
+                if(myDBHelper.getCountOfCheckDates() == 0){
+                    Toast.makeText(this, "You must first set up your check dates in the menu", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    // TODO: 1/10/19 add activity to view a list of all paychecks.
+                    // TODO: 1/10/19 OR MAYBE to view all your bills
+//                    Intent intent = new Intent(MainActivity.this, DetailedActivity.class);
+//                    MainActivity.this.startActivity(intent);
+                }
+                break;
             default:
                 break;
         }
@@ -210,11 +221,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
                 for(BillData billData: unfilteredList){
                     Integer billDay = Integer.parseInt(billData.getDay());
                     Integer calendarDay = Integer.parseInt(day);
-                    Log.i("Bill Data ", billData.toString());
-                    Log.i("Bill day = ", String.valueOf(billDay));
-                    Log.i("Calendar Day = ", String.valueOf(calendarDay));
+
                     if(billDay == calendarDay){
-                        Log.i("FOR 2", "I ENTERED if statement");
                         billDataArrayList.add(billData);
                     }
                 }
@@ -242,10 +250,28 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
     }
 
     public String determineCurrentPayIteration(ArrayList<CheckData> checkDataArrayList){
+        //FIRST - everytime the main activity opens, makes sure you are updating the current pay iteration
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        try {
+            Date todaysDate = sdf.parse(sdf.format(new Date()));
+            Log.i("current pay iteration", sdf.format(todaysDate));
 
+            for (int i = 0; i < checkDataArrayList.size(); i++){
+                String check = checkDataArrayList.get(i).getDate();
+                Date checkDate = sdf.parse(check);
+//                Log.i("next pay iteration",sdf.format(checkDate));
+                if (todaysDate.equals(checkDate)){
+                    int check_id = checkDataArrayList.get(i).getId();
+                    int check_used = checkDataArrayList.get(i).isUsed();
+                    myDBHelper.updateCheckDateTable(check, check_id, check_used);
+                }
+            }
+        }catch (Exception e) { e.printStackTrace();}
+
+        //SECOND - find the lastest date in table with used = 1, and return that
         String currentPayDate = "";
         for( int i = 0; i < checkDataArrayList.size(); i++){
-
+            Log.i("format",checkDataArrayList.get(i).getDate());
             if( checkDataArrayList.get(i).isUsed() == 1){
                 currentPayDate = checkDataArrayList.get(i).getDate();
             }else{
@@ -254,6 +280,4 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
         }
         return currentPayDate;
     }
-
-    //TODO: REMEMEBR, bills may fall on the same day
 }

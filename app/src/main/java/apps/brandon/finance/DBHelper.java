@@ -166,13 +166,15 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<CheckData> checkDatesList = new ArrayList<>();
         String date;
         int used;
+        int id;
 
         if(cursor.getCount() > 0){
             for( int i = 0; i < cursor.getCount(); i++){
                 cursor.moveToNext();
+                id = cursor.getInt(0);
                 date = cursor.getString(1);
                 used = cursor.getInt(2);
-                CheckData checkData = new CheckData(date, used);
+                CheckData checkData = new CheckData(date, used, id);
                 checkDatesList.add(checkData);
             }
         }
@@ -186,6 +188,24 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int rowsDeleted = db.delete(TABLE_NAME_CHECKDATES,"1", null);
         return rowsDeleted;
+    }
+
+    public int updateCheckDateTable(String date, int id, int used) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        String selection = "date = ?";
+        String[] selectionArgs = { date };
+        values.put(COLUMN_ID_CHECKS, id);
+        values.put(COLUMN_DATE_CHECKS, date);
+        values.put(COLUMN_USED_CHECKS, used);
+
+        int rowsAffected = db.update(TABLE_NAME_BILL, values, selection, selectionArgs);
+        Log.i("checkdate_id ", String.valueOf(rowsAffected));
+
+
+        return rowsAffected;
     }
 
 }
