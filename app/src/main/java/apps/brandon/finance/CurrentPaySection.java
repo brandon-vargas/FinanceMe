@@ -2,9 +2,11 @@ package apps.brandon.finance;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class CurrentPaySection extends StatelessSection{
         itemViewHolder.name.setText(billDataList.get(position).getName());
 //        itemViewHolder.amount.setText(billDataList.get(position).getAmount());
         Log.i("wtf part2",String.valueOf(position));
+        Log.i("background",itemViewHolder.cardView.getCardBackgroundColor().getDefaultColor());
         itemViewHolder.cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -57,6 +60,14 @@ public class CurrentPaySection extends StatelessSection{
                 intent.putExtra("id", billDataList.get(position).getId());
                 intent.putExtra("size",billDataList.size());
                 mContext.startActivity(intent);
+            }
+        });
+        itemViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.i("click!","i am fucking working!!!!");
+                itemViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#e0fde0"));
+                return true;
             }
         });
     }
